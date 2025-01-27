@@ -9,6 +9,7 @@ KVUri = f"https://{key_vault_name}.vault.azure.net"
 secret_name = "db-name"
 
 # Autenticar e criar um cliente
+# Esse metodo é usado para autenticar com a identidade do sistema
 credential = DefaultAzureCredential()
 client = SecretClient(vault_url=KVUri, credential=credential)
 
@@ -16,4 +17,4 @@ client = SecretClient(vault_url=KVUri, credential=credential)
 retrieved_secret = client.get_secret(secret_name)
 
 # Exibir valor do segredo
-print(f"Valor do segredo '{secret_name}': {retrieved_secret}")
+print(f"O valor do segredo é '{secret_name}': {retrieved_secret}")
