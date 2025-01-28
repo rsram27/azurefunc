@@ -6,7 +6,7 @@ key_vault_name = "engdadoskey2"
 KVUri = f"https://{key_vault_name}.vault.azure.net"
 
 # Nome do segredo
-secret_name = "db-name"
+secret_name = "db-server"
 
 # Autenticar e criar um cliente
 # Esse metodo é usado para autenticar com a identidade do sistema

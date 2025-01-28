@@ -5,6 +5,15 @@ from azure.keyvault.secrets import SecretClient
 from azure.core.exceptions import AzureError
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
+    """
+    HTTP-triggered function that retrieves a secret from Azure Key Vault.
+    
+    Parameters:
+        req (func.HttpRequest): The HTTP request object
+        
+    Returns:
+        func.HttpResponse: The HTTP response containing the secret value or error message
+    """
     logging.info('Python HTTP trigger function processed a request.')
 
     # URL do Key Vault
@@ -12,7 +21,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     KVUri = f"https://{key_vault_name}.vault.azure.net"
 
     # Nome do segredo
-    secret_name = "db-name"
+    secret_name = req.params.get('secret_name', 'db-password')
 
     try:
         # Autenticar e criar um cliente
@@ -23,11 +32,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         retrieved_secret = client.get_secret(secret_name)
 
         # Exibir valor do segredo
-        if retrieved_secret.value:
-            return func.HttpResponse(f"Valor do segredo '{secret_name}': {retrieved_secret.value}")
-        else:
-            return func.HttpResponse(f"Segredo '{secret_name}' está vazio", status_code=404)
+        return func.HttpResponse(f"Secret value: {retrieved_secret.value}")
 
-    except AzureError as e:
-        logging.error(f"Ocorreu um erro ao acessar o Key Vault: {e}")
-        return func.HttpResponse(f"Ocorreu um erro ao acessar o Key Vault: {e}", status_code=500)
+    except Exception as e:
+        return func.HttpResponse(f"Error: {str(e)}", status_code=500)
