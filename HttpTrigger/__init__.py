@@ -6,15 +6,15 @@ from azure.core.exceptions import AzureError
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     """
-    HTTP-triggered function that retrieves a secret from Azure Key Vault.
+    Função acionada por HTTP que recupera um segredo do Azure Key Vault.
     
-    Parameters:
-        req (func.HttpRequest): The HTTP request object
+    Parâmetros:
+        req (func.HttpRequest): O objeto de requisição HTTP
         
-    Returns:
-        func.HttpResponse: The HTTP response containing the secret value or error message
+    Retorna:
+        func.HttpResponse: A resposta HTTP contendo o valor do segredo ou mensagem de erro
     """
-    logging.info('Python HTTP trigger function processed a request.')
+    logging.info('Função Python HTTP trigger processou uma requisição.')
 
     # URL do Key Vault
     key_vault_name = "engdadoskey2"
@@ -32,7 +32,32 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         retrieved_secret = client.get_secret(secret_name)
 
         # Exibir valor do segredo
-        return func.HttpResponse(f"Secret value: {retrieved_secret.value}")
+        if retrieved_secret and retrieved_secret.value:
+            return func.HttpResponse(
+                body=f"Valor do segredo '{secret_name}': {retrieved_secret.value}",
+                status_code=200,
+                mimetype="text/plain"
+            )
+        else:
+            return func.HttpResponse(
+                body=f"Segredo '{secret_name}' não encontrado ou vazio",
+                status_code=404,
+                mimetype="text/plain"
+            )
 
+    except AzureError as e:
+        erro_mensagem = f"Erro ao acessar o Key Vault: {str(e)}"
+        logging.error(erro_mensagem)
+        return func.HttpResponse(
+            body=erro_mensagem,
+            status_code=500,
+            mimetype="text/plain"
+        )
     except Exception as e:
-        return func.HttpResponse(f"Error: {str(e)}", status_code=500)
+        erro_mensagem = f"Erro inesperado: {str(e)}"
+        logging.error(erro_mensagem)
+        return func.HttpResponse(
+            body=erro_mensagem,
+            status_code=500,
+            mimetype="text/plain"
+        )
