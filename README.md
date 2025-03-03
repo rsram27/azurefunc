@@ -23,3 +23,9 @@ Esta Azure Function foi criada para acessar um segredo armazenado no Azure Key V
 1. **Instalar Dependências:**
    ```bash
    pip install -r requirements.txt
+
+### Histórico de Revisões
+
+| Data | Versão | Descrição | Autor |
+|------|---------|-----------|--------|
+| 03/03/2025 | 1.0.0 | Versão inicial do projeto com funcionalidades básicas de acesso ao Key Vault | Ronaldo Ramires |
